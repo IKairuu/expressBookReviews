@@ -23,7 +23,7 @@ public_users.get('/',function (req, res) {
   //Write your code here
   new Promise((resolve, reject) => {
     resolve(books) ;
-  }).then((data) =>{res.status(200).json(JSON.stringify(books))}).catch((err) => {return res.status(500).json({message: "Error"});}) ;
+  }).then((data) =>{res.status(200).json(JSON.stringify(data))}).catch((err) => {return res.status(500).json({message: "Error"});}) ;
   
 });
 
@@ -31,43 +31,49 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
   const data = req.params.isbn ;
-  return res.status(200).json(JSON.stringify(books[data]));
+  new Promise((resolve, reject) => {
+    resolve(JSON.stringify(books[data]))
+  }).then((data) => {return res.status(200).json(JSON.stringify(data));}).catch((err) => {return res.status(500).json({message: "Error"});}) ;
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  const data = req.params.author ;
-  let bookList = [] ;
+  const author = req.params.author ;
+  new Promise((resolve, reject) => {
+    let bookList = [] ;
   for (let objs in books)
   {
-    if (books[objs].author == data)
+    if (books[objs].author == author)
     {
         bookList.push(books[objs]) ;
     }
   }
-  if (bookList.length > 0)
-    {return res.status(200).json({message: bookList});}
-  else
-    {return res.status(200).json({message: "None Found"});}
+    if (bookList.length > 0)
+        {resolve(bookList)}
+    else
+        {reject("No books found")}
+  }).then((data) => {return res.status(200).json({message : data})}).catch((err) => {return res.status(500).json({message: `Error ${err}`});}) ;
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  const data = req.params.title ;
-  let bookList = [] ;
+  const title = req.params.title ;
+  new Promise((resolve, reject) => {
+    let bookList = [] ;
   for (let objs in books)
   {
-    if (books[objs].title == data)
+    if (books[objs].title == title)
     {
         bookList.push(books[objs]) ;
     }
   }
-  if (bookList.length > 0)
-    {return res.status(200).json({message: bookList});}
-  else
-    {return res.status(200).json({message: "None Found"});}
+    if (bookList.length > 0)
+        {resolve(bookList)}
+    else
+        {reject("No books found")}
+  }).then((data) => {return res.status(200).json({message : data})}).catch((err) => {return res.status(500).json({message: `Error ${err}`});}) ;
 });
 
 //  Get book review
